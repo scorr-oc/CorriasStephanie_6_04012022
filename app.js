@@ -10,6 +10,10 @@ const app = express();
 Importation de Mongoose
 */
 const mongoose = require('mongoose')
+/*
+Importation des routers
+*/
+const userRoutes= require('./routes/user')
 
 /* 
 Ajout de l'adresse SRV récupérée sur MongoDB
@@ -34,6 +38,11 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next()
 })
+
+/*
+Enregistrement du routeur
+*/
+app.use('/api/auth', userRoutes)
 
 
 module.exports = app;

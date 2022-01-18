@@ -10,39 +10,36 @@ const app = express();
 Importation de Mongoose
 */
 const mongoose = require('mongoose')
-/*
-Importation des routers
-*/
-const userRoutes= require('./routes/user')
-
 /* 
 Ajout de l'adresse SRV récupérée sur MongoDB
 */
-mongoose.connect('mongodb+srv://michelle:steco91@cluster0.kbdyl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://michelle:steco91@cluster0.vwclf.mongodb.net/piiquante?retryWrites=true&w=majority',
     { useNewUrlParser: true,
       useUnifiedTopology: true})
       .then(() => console.log('Connecté à MongoDB'))
       .catch(()=> console.log('Echec de la connexion à MongoDb'))
-      
+
+      /*
+Importation des routers
+*/
+const userRoutes= require('./routes/user')
+
+
 app.use(express.json())
 
 /* 
 Middleware pour que les serveurs puissent communiquer entre eux. In ne prend pas d'adresse pour pouvoir s'appliquer sur toutes les route
 */
 app.use((req, res, next) => {
-    // Permet d'accéder à notre API depuis n'importe quelle origine "*"
     res.setHeader('Access-Control-Allow-Origin', '*');
-    // Permet d'ajouter les headers mentionnés aux requêtes envoyées à l'API(Origin...)
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    // Permet d'envoyer des requêtes avec les méthodes mentionnées (get, post....)
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next()
 })
 
 /*
-Enregistrement du routeur
+Enregistrement des routeurs
 */
 app.use('/api/auth', userRoutes)
-
 
 module.exports = app;

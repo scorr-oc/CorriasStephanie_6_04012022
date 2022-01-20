@@ -23,6 +23,8 @@ mongoose.connect('mongodb+srv://michelle:steco91@cluster0.vwclf.mongodb.net/piiq
 Importation des routers
 */
 const userRoutes= require('./routes/user')
+const sauceRoutes = require('./routes/sauce')
+
 
 
 app.use(express.json())
@@ -41,5 +43,6 @@ app.use((req, res, next) => {
 Enregistrement des routeurs
 */
 app.use('/api/auth', userRoutes)
+app.use('/api/sauces', sauceRoutes)
 
 module.exports = app;

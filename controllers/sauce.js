@@ -1,6 +1,7 @@
 const express = require('express');
 const Sauce = require('../models/Sauce')
-const fs = require('fs')
+const fs = require('fs');
+const { countReset } = require('console');
 
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce)
@@ -52,9 +53,19 @@ exports.deleteSauce = (req, res, next) => {
 }
 
 exports.likeSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id})
+
+  console.log("je suis dans like")
+  console.log("id en _id")
+  console.log({_id: req.params.id})
+
+  Sauce.findOne({_id: req.params.id})
   .then (sauce => {
-    if (!sauce.usersLiked.includes(req.body.userId) && req.body.likes === 1){
+    console.log(sauce)
+    console.log(req.body)
+   
+    if (!sauce.usersLiked.includes(req.body.userId) && req.body.like === 1){
+      console.log('le user ne se trouve pas dans le tableau')
+   
       Sauce.updateOne(
         { _id : req.params.id},
         { $inc: {likes: 1},
@@ -65,7 +76,7 @@ exports.likeSauce = (req, res, next) => {
       .catch (error => res.status(400).json({error}))
     }
 
-    if (sauce.usersLiked.includes(req.body.userId) && req.body.likes === 0){
+    if (sauce.usersLiked.includes(req.body.userId) && req.body.like === 0){
       Sauce.updateOne(
         { _id : req.params.id},
         { $inc: {likes: -1},
@@ -76,7 +87,7 @@ exports.likeSauce = (req, res, next) => {
       .catch (error => res.status(400).json({error}))
     }
 
-    if (!sauce.usersDisliked.includes(req.body.userId) && req.body.likes === -1){
+    if (!sauce.usersDisliked.includes(req.body.userId) && req.body.like === -1){
       Sauce.updateOne(
         { _id : req.params.id},
         { $inc: {dislikes: 1},
@@ -87,7 +98,7 @@ exports.likeSauce = (req, res, next) => {
       .catch (error => res.status(400).json({error}))
     }
 
-    if (sauce.usersDisliked.includes(req.body.userId) && req.body.likes === 0){
+    if (sauce.usersDisliked.includes(req.body.userId) && req.body.like === 0){
       Sauce.updateOne(
         { _id : req.params.id},
         { $inc: {dislikes: -1},
@@ -99,5 +110,4 @@ exports.likeSauce = (req, res, next) => {
     }
   })
   .catch(error => res.status(404).json({error}))
-
 }

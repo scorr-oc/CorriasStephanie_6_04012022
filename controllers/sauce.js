@@ -1,7 +1,7 @@
 const express = require('express');
 const Sauce = require('../models/Sauce')
 const fs = require('fs');
-const { countReset } = require('console');
+
 
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce)
@@ -28,11 +28,19 @@ exports.getOneSauce = (req, res, next) => {
 }
 
 exports.modifySauce = (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id})
+  .then (sauce => {
+    const filename = sauce.imageUrl.split('/images')[1]
+    fs.unlink(`images/${filename}`,(error) =>{
+      if(error) throw error
+    })
+  })
   const sauceObject = req.file ?
   {
     ...JSON.parse(req.body.sauce),
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   } : {...req.body}
+ 
   Sauce.updateOne({_id: req.params.id},{...sauceObject, _id: req.params.id})
   .then(() => res.status(200).json({message : 'Object modified'}))
   .catch(error => res.status(400).json({error}))
@@ -53,19 +61,9 @@ exports.deleteSauce = (req, res, next) => {
 }
 
 exports.likeSauce = (req, res, next) => {
-
-  console.log("je suis dans like")
-  console.log("id en _id")
-  console.log({_id: req.params.id})
-
   Sauce.findOne({_id: req.params.id})
   .then (sauce => {
-    console.log(sauce)
-    console.log(req.body)
-   
     if (!sauce.usersLiked.includes(req.body.userId) && req.body.like === 1){
-      console.log('le user ne se trouve pas dans le tableau')
-   
       Sauce.updateOne(
         { _id : req.params.id},
         { $inc: {likes: 1},

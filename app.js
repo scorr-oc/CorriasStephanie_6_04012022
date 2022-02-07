@@ -7,13 +7,18 @@ Appel de la méthode express() par la création d'une constante
 */
 const app = express();
 /*
+Importation de dotenv()
+*/
+const dotenv = require('dotenv')
+const result = dotenv.config()
+/*
 Importation de Mongoose
 */
 const mongoose = require('mongoose')
 /* 
 Ajout de l'adresse SRV récupérée sur MongoDB
 */
-mongoose.connect('mongodb+srv://michelle:steco91@cluster0.vwclf.mongodb.net/piiquante?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.vwclf.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
     { useNewUrlParser: true,
       useUnifiedTopology: true})
       .then(() => console.log('Connecté à MongoDB'))
